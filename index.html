@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+		<title>HearthStone - HTML5</title>
+		<style>
+			body {
+				background-color: white;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#gameCanvas {
+				position: absolute; left:0px; top:0px;
+				/*background-color: black;
+				width: 640px;
+				height: 360px;
+				margin: auto;
+				align: center;*/
+			}
+
+		</style>
+		<script type="text/javascript">var board;</script>
+	</head>
+	<body onload='board = new Board();'>
+		<div id='gameCanvas'></div>
+		<div style="position: absolute; left:0px; top:0px;">
+			<button onclick="board.addcard(deck.draw());">Draw a card</button>
+		</div>
+		<script src='./js/three.min.js'></script>
+		<script src='./js/keyboard.js'></script>
+		<script src='./js/THREEx.WindowResize.js'></script>
+		<script src='./js/tween.js'></script>
+		<script src='./js/objects.js'></script>
+		<script src='./js/game.js'></script>
+	</body>
+</html>
