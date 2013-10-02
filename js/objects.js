@@ -41,4 +41,16 @@ function Deck(cards){
 var deck = new Deck([
 		new Card (318,"Baine Bloodhoof",0,card_type.CREATURE,5,4,4,"img/EX1_110t.png",[]),
 		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
+		new Card (440,"Abomination",0,card_type.CREATURE,4,5,4,"img/EX1_097.png",[]),
 	]);

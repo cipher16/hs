@@ -1,6 +1,3 @@
-//THREE.QuadraticBezierCurve3
-//http://www.movable-type.co.uk/scripts/latlong.html
-
 //board object : scene objects and other stuffs
 function Board()
 {
@@ -25,14 +22,39 @@ function Board()
 		});
 
 		var card = new THREE.Mesh(
-		  new THREE.CubeGeometry(100,150,1,10/*quality*/,10/*quality*/,1),
+		  new THREE.CubeGeometry(40,60,1,10/*quality*/,10/*quality*/,1),
 		  cardMaterial);
-		card.position.z = 0;
-		card.position.x = group_hand.children.length*100;
-		card.position.y = 0;
-		card.receiveShadow = false;	
+		card.receiveShadow = true;	
 		card.userData = { Card: c};
 		group_hand.add(card);
+
+		if(group_hand.children.length>0)
+		{
+			var path = new THREE.Path();
+			path.moveTo(0,0)
+				if(group_hand.children.length>3)
+					path.quadraticCurveTo(62.5,25,125,0);
+				else
+					path.lineTo(125,0);
+			var points = path.getSpacedPoints(group_hand.children.length+1);
+			console.log(points,group_hand.children.length)
+			for(var i=0;i<group_hand.children.length;i++){
+				group_hand.children[i].position.x = points[i+1].x;
+				group_hand.children[i].position.y = points[i+1].y;
+				group_hand.children[i].position.z = i+1;//so each card is on top of the old one
+
+				var rot = path.getTangent(1-(1/group_hand.children.length)*i);
+				group_hand.children[i].rotation.z = -rot.y;
+			}
+			//group_hand.position.x=-(Math.round(group_hand.children.length/2)*50)+50;
+			//console.log("Position : ",group_hand.position.x);
+			/*var tween = new TWEEN.Tween({x: group_hand.position.x, y: group_hand.position.y})
+	            .to({ x : -(group_hand.children.length*50/2)+25 },2000)
+	            .easing(TWEEN.Easing.Elastic.InOut)
+	            .onUpdate(function () {
+	            	group_hand.position.x = this.x;
+	            }).start();*/
+		}
 	}
 
 /**
@@ -73,43 +95,38 @@ function Board()
 		renderer.setSize(WIDTH, HEIGHT);
 		c.appendChild(renderer.domElement);
 
-		var groundMaterial =
-		  new THREE.MeshLambertMaterial({color: 0x888888});
-		var ground = new THREE.Mesh(
-		  new THREE.CubeGeometry(2000,2000,3,1,1,1),
-		  groundMaterial);
+		var tableMaterial =
+		  new THREE.MeshLambertMaterial(/*{color: 0x888888}*/
+		  	//{map: THREE.ImageUtils.loadTexture( "img/STW_Table.png" )});
+			{map: THREE.ImageUtils.loadTexture( "img/board.png" )});
+		var table = new THREE.Mesh(
+		  new THREE.CubeGeometry(450,350,3,1,1,1),
+		  tableMaterial);
 	    // set ground to arbitrary z position to best show off shadowing
-		ground.position.z = -200;
-		ground.receiveShadow = true;	
-		scene.add(ground);
+		table.position.z = 0;
+		table.position.y = 25;
+		table.receiveShadow = true;	
+		scene.add(table);
 
 		// // create a point light
 		pointLight =
 		  new THREE.PointLight(0xF8D898);
 
 		// set its position
-		pointLight.position.x = -900;
+		pointLight.position.x = 0;
 		pointLight.position.y = 0;
 		pointLight.position.z = 1000;
-		pointLight.intensity = 2.9;
+		pointLight.intensity = 1.9;
 		pointLight.distance = 10000;
 		// add to the scene
 		scene.add(pointLight);
 		//renderer.shadowMapEnabled = true;		
 
 //the game magic
-		var path = new THREE.CurvePath();
-		path.add(new THREE.CubicBezierCurve(
-			new THREE.Vector2(0,0),
-			new THREE.Vector2(10,100),
-			new THREE.Vector2(200,-10),
-			new THREE.Vector2(300,0)
-		));
-
 		group_hand     = new THREE.Object3D();
 		group_board_p1 = new THREE.Object3D();
-		group_hand.position.y = -100;
-		group_hand.bendPath = path;
+		group_hand.position.y = -130;
+		group_hand.position.x = -75;
 		scene.add(group_hand);
 		scene.add(group_board_p1);
 
@@ -155,6 +172,7 @@ function Board()
 				INTERSECTED.material.color.setHex( 0xffff00 );
 				console.log("Intersection : ",INTERSECTED.userData.Card);
 				document.body.style.cursor='pointer';
+
 			}
 		}
 		else // there are no intersections
@@ -188,34 +206,6 @@ function Board()
 
 
 
-			//effet fleche
-				//triangle
-				var triangleShape = new THREE.Shape();
-				triangleShape.moveTo(  20, 20 );
-				triangleShape.lineTo( 120, 20 );
-				triangleShape.lineTo(  70, 70 );
-				triangleShape.lineTo(  20, 20 ); // close path
-
-				var geometry = new THREE.ExtrudeGeometry( triangleShape, { amount: 10 } );
-
-				var mesh = THREE.SceneUtils.createMultiMaterialObject( geometry, [ new THREE.MeshLambertMaterial( { color: 0xff1100 } ), new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: false, transparent: false } ) ] );
-				mesh.position.set( 0,0,0 );
-				scene.add( mesh );
-				//rectangle
-				var rectShape = new THREE.Shape();
-				rectShape.moveTo(   0,   0 );
-				rectShape.lineTo(  40,   0 );
-				rectShape.lineTo(  40, 120 );
-				rectShape.lineTo(   0, 120 );
-				rectShape.lineTo(   0,   0 ); // close path
-
-				var geometry = new THREE.ExtrudeGeometry( rectShape, { amount: 10 } );
-
-				var mesh = THREE.SceneUtils.createMultiMaterialObject( geometry, [ new THREE.MeshLambertMaterial( { color: 0xff1100 } ), new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: false, transparent: false } ) ] );
-				mesh.position.set( 0,-120,0 );
-
-				scene.add( mesh );
-
 			}
 		}
 	}
@@ -237,7 +227,8 @@ function Board()
 
 }
 
-
+//THREE.QuadraticBezierCurve3
+//http://www.movable-type.co.uk/scripts/latlong.html
 /*
 
 http://sole.github.io/tween.js/examples/03_graphs.html
@@ -250,4 +241,43 @@ var tween = new TWEEN.Tween( { x: card.x, y: card.y } )
 		                console.log('x == ' + Math.round( this.x ));
 		            } ).start();
 
-*/
+
+/*
+			//effet fleche
+				//triangle
+				var triangleShape = new THREE.Shape();
+				triangleShape.moveTo(  20, 20 );
+				triangleShape.lineTo( 120, 20 );
+				triangleShape.lineTo(  70, 70 );
+				triangleShape.lineTo(  20, 20 ); // close path
+
+				var geometry = new THREE.ExtrudeGeometry( triangleShape, { amount: 10 } );
+
+				var mesh = THREE.SceneUtils.createMultiMaterialObject( geometry, [ new THREE.MeshLambertMaterial( { color: 0xff1100 } ), new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: false, transparent: false } ) ] );
+				mesh.position.set( 0,0,0 );
+				scene.add( mesh );
+				//rectangle
+				
+				var rectShape = new THREE.Shape();
+				rectShape.moveTo(  50,  0 );
+				rectShape.lineTo(  90,  0 );
+				rectShape.lineTo(  90, 60 );
+				rectShape.lineTo(  50, 60 );
+				rectShape.lineTo(  50,  0 ); // close path
+
+				var geometry = new THREE.ExtrudeGeometry( rectShape, { amount: 10 } );
+				var mesh = THREE.SceneUtils.createMultiMaterialObject( geometry, [ new THREE.MeshLambertMaterial( { color: 0xff1100 } ), new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: false, transparent: false } ) ] );
+				mesh.position.set( 0,-120,0 );
+				scene.add( mesh );
+
+			//path
+			
+				var spline = new THREE.SplineCurve3([new THREE.Vector3(0, 0, 0), new THREE.Vector3(50, 50, 100), new THREE.Vector3(100, 100, 0)]);
+				//var geometry = new THREE.ExtrudeGeometry( spline, { amount: 10 } );
+				var tube = new THREE.TubeGeometry(spline, true, 20, 10, false, false);
+				var mesh = THREE.SceneUtils.createMultiMaterialObject( tube, [ new THREE.MeshLambertMaterial( { color: 0xff1100 } ), new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true } ) ] );
+				mesh.position.set( -200,-120,0 );
+			
+
+				scene.add( mesh );
+				*/
